@@ -64,9 +64,9 @@ class Client extends AbstractBrowser implements WebDriver, JavaScriptExecutor, W
     /**
      * @param string[]|null $arguments
      */
-    public static function createChromeClient(?string $chromeDriverBinary = null, ?array $arguments = null, array $options = [], ?string $baseUri = null): self
+    public static function createChromeClient(?string $chromeDriverBinary = null, ?array $arguments = null, array $options = [], array $experimentalOptions = [], ?string $baseUri = null): self
     {
-        return new self(new ChromeManager($chromeDriverBinary, $arguments, $options), $baseUri);
+        return new self(new ChromeManager($chromeDriverBinary, $arguments, $options, $experimentalOptions), $baseUri);
     }
 
     /**

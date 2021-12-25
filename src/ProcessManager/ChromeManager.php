@@ -23,20 +23,22 @@ use Symfony\Component\Process\Process;
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-final class ChromeManager implements BrowserManagerInterface
+class ChromeManager implements BrowserManagerInterface
 {
     use WebServerReadinessProbeTrait;
 
     private Process $process;
     private array $arguments;
     private array $options;
+    private array $experimentalOptions;
 
     /**
      * @throws \RuntimeException
      */
-    public function __construct(?string $chromeDriverBinary = null, ?array $arguments = null, array $options = [])
+    public function __construct(?string $chromeDriverBinary = null, ?array $arguments = null, array $options = [], $experimentalOptions = [])
     {
         $this->options = $options ? array_merge($this->getDefaultOptions(), $options) : $this->getDefaultOptions();
+        $this->experimentalOptions = $experimentalOptions;
         $this->process = $this->createProcess($chromeDriverBinary ?: $this->findChromeDriverBinary());
         $this->arguments = $arguments ?? $this->getDefaultArguments();
     }
@@ -66,6 +68,10 @@ final class ChromeManager implements BrowserManagerInterface
                 $capabilities->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
             }
             $chromeOptions->addArguments($this->arguments);
+
+            if (!empty($this->experimentalOptions)) {
+                $chromeOptions->setExperimentalOption('prefs', $this->getExperimentalOptions());
+            }
 
             if (isset($_SERVER['PANTHER_CHROME_BINARY'])) {
                 $chromeOptions->setBinary($_SERVER['PANTHER_CHROME_BINARY']);
@@ -143,5 +149,10 @@ final class ChromeManager implements BrowserManagerInterface
             'chromedriver_arguments' => [],
             'capabilities' => [],
         ];
+    }
+
+    private function getExperimentalOptions(): \stdClass
+    {
+        return json_decode(json_encode($this->experimentalOptions), false);
     }
 }
