@@ -80,7 +80,7 @@ final class FirefoxManager implements BrowserManagerInterface
      */
     private function findGeckodriverBinary(): string
     {
-        if ($binary = (new ExecutableFinder())->find('geckodriver', null, ['./drivers'])) {
+        if ($binary = (new ExecutableFinder())->find('geckodriver', null, ['./drivers', '../drivers'])) {
             return $binary;
         }
 
