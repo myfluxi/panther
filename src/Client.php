@@ -579,7 +579,10 @@ class Client extends AbstractBrowser implements WebDriver, JavaScriptExecutor, W
     public function quit(bool $quitBrowserManager = true): void
     {
         if (null !== $this->webDriver) {
-            $this->webDriver->quit();
+            try {
+                $this->webDriver->quit();
+            } catch (\Exception $e) {
+            }
             $this->webDriver = null;
         }
 
