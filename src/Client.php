@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\Panther;
 
+use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\TimeoutException;
 use Facebook\WebDriver\JavaScriptExecutor;
@@ -664,10 +665,8 @@ class Client extends AbstractBrowser implements WebDriver, JavaScriptExecutor, W
      * @param string $script
      *
      * @throws \Exception
-     *
-     * @return mixed
      */
-    public function executeScript($script, array $arguments = [])
+    public function executeScript($script, array $arguments = []): mixed
     {
         if (!$this->webDriver instanceof JavaScriptExecutor) {
             throw $this->createException(JavaScriptExecutor::class);
@@ -680,16 +679,29 @@ class Client extends AbstractBrowser implements WebDriver, JavaScriptExecutor, W
      * @param string $script
      *
      * @throws \Exception
-     *
-     * @return mixed
      */
-    public function executeAsyncScript($script, array $arguments = [])
+    public function executeAsyncScript($script, array $arguments = []): mixed
     {
         if (!$this->webDriver instanceof JavaScriptExecutor) {
             throw $this->createException(JavaScriptExecutor::class);
         }
 
         return $this->webDriver->executeAsyncScript($script, $arguments);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function executeCdpCommand(string $command, array $params = []): array
+    {
+        $this->start();
+
+        if (!$this->webDriver instanceof RemoteWebDriver) {
+            throw $this->createException(RemoteWebDriver::class);
+        }
+
+        return (new ChromeDevToolsDriver($this->webDriver))->execute($command, $params);
+
     }
 
     /**
