@@ -174,7 +174,7 @@ class E2eTest extends PantherTestCase
         $this->assertSelectorWillExist('.popin'); // element will be attached to the DOM
         $this->assertSelectorWillNotExist('.popin'); // element will be removed from the DOM
         $this->assertSelectorWillBeVisible('.loader'); // element will be visible
-        $this->assertSelectorWillNotBeVisible('.loader'); // element will be visible
+        $this->assertSelectorWillNotBeVisible('.loader'); // element will not be visible
         $this->assertSelectorWillContain('.total', '€25'); // text will be inserted in the element content
         $this->assertSelectorWillNotContain('.promotion', '5%'); // text will be removed from the element content
         $this->assertSelectorWillBeEnabled('[type="submit"]'); // button will be enabled 
@@ -676,6 +676,18 @@ The following features are not currently supported:
 * Selecting invalid choices in select
 
 Pull Requests are welcome to fill the remaining gaps!
+
+## Troubleshooting
+
+### Run with Bootstrap 5
+
+If you are using Bootstrap 5, then you may have a problem with testing. Bootstrap 5 implements a scrolling effect, which tends to mislead Panther.
+
+To fix this, we advise you to deactivate this effect by setting the Bootstrap 5 **$enable-smooth-scroll** variable to **false** in your style file.
+
+```scss
+$enable-smooth-scroll: false;
+```
 
 ## Save the Panthers
 
